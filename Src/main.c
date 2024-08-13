@@ -84,28 +84,26 @@ float convert_temp(uint16_t);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-volatile uint16_t pwm_width = 25;
-volatile int8_t cw = 1;
-volatile uint8_t display_temp_en = 1;
-volatile uint8_t fan_change_en = 1;
-volatile uint8_t poll_temp = 1;
-
-
-uint8_t fan_level_ref;
+volatile uint16_t pwm_width = 25; // Initialize PWM signal width
+volatile int8_t cw = 1; // Initialize PWM Rotation as clockwise
+volatile uint8_t display_temp_en = 1; // Enable temperature display
+volatile uint8_t fan_change_en = 1; // Enable fan to change state
+volatile uint8_t poll_temp = 1; // Enable temperature polling
 
 volatile int16_t encoder_velocity;
 volatile int32_t encoder_position;
 volatile uint16_t encoder_count;
 
+uint8_t fan_level_ref; // Reference speed of rotating of DC Motor
 encoder_instance enc_instance;
 
-// count per 100ms -> revolutions per minute. CPR = 540*4 = 2160
+// Encoder count per 100ms -> revolutions per minute. Encoder's CPR = 540*4 = 2160
 float rpm_conv = 600.0/(2160.0);
 
 pid_struct pid_instance = {
 		.p_gain = 1.2,
-		.i_gain = 0.02,
-		.d_gain = 0,
+		.i_gain = 0.04,
+		.d_gain = 0.02,
 		.sample_freq = 10,
 		.prev_error = 0,
 		.error_sum = 0
