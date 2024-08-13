@@ -1,11 +1,9 @@
 # Temperature Display and Rotating Fan
-This project takes the temperature, displays the reading to an LCD, and turns on a rotating fan at different speeds according to the read temperature.
+This project takes the temperature, displays the reading to an LCD, and turns on a rotating fan at different speeds according to the read temperature. This project was built on an STM32F446RE Nucleo Discovery Board.
 
 **[Demo Video](https://youtu.be/MhBhJYdzf1E)**
 
 # Project Details
-This project was built on an STM32F446RE Nucleo Discovery Board.
-
 ## Temperature
 The temperature is taken from a TMP102 analog output sensor. The analog value is interpretted by the microcontroller's ADC peripheral. The ADC polls for a reading every 5 seconds. This procedure is non-blocking, it uses a timer interrupt to control the periodicity of the reading.
 
