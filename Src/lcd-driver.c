@@ -13,7 +13,10 @@
 
 #include "lcd-driver.h"
 
-#define LCD_I2C_ADDRESS 0x27 << 1 // Default address of I2C slave
+
+#define LCD_I2C_ADDRESS 0x27 << 1
+
+
 
 /**
  *
@@ -30,39 +33,13 @@
  */
 
 /**
- * Initializes LCD
- *
- * @param hi2c - the I2C Peripheral
- */
-void LCD_Init(I2C_HandleTypeDef *hi2c)
-{
-	/**
-	 * Initialization sequence for 4 bit, 2 line, 5x8 character size, Cursor display enabled,
-	 * Cursor Blinking disabled, Cursor incrementing, Display shifting disabled.
-	 */
-	HAL_Delay(41); // Wait >40ms after power on
-	LCD_Send_Command (hi2c, 0x28); // Function set - 4b mode (DL=0), 2 line display (N=1), 5x8 char size (F=0)
-	HAL_Delay(1); // Wait >39us
-	LCD_Send_Command (hi2c, 0x08); // Display ON/OFF control - Display off (D=0)
-	HAL_Delay(1); // Wait >39us
-	LCD_Send_Command (hi2c, 0x01);  // Clear display
-	HAL_Delay(2); // Wait >1.53ms
-	LCD_Send_Command (hi2c, 0x06); // Entry mode Set - Increment cursor (I/D'=1), No shifting of display (SH=0)
-	HAL_Delay(1);
-	LCD_Send_Command(hi2c, 0x02); // Return Home
-	HAL_Delay(2); // Wait >1.53ms
-	LCD_Send_Command (hi2c, 0x0C); // Display ON/OFF control - Display on (D=1), Cursor on (C=1), No Cursor Blinking (B=0)
-	HAL_Delay(1); // Wait >37us
-}
-
-/**
  * Sends 8 bit command in parts of 4 bits.
  * Meant to be used with configuration instructions rather than data to display.
  * Sends command twice, once with E=1, and again with E=0 for strobe.
  *
  * @param cmd - the command to send
  */
-void LCD_Send_Command(I2C_HandleTypeDef *hi2c, uint8_t cmd)
+static void __LCD_Send_Command(I2C_HandleTypeDef *hi2c, uint8_t cmd)
 {
 	/**
 	 * Arrange instruction in two parts of 4 bits. The 4 upper bits specify D7-D4, the 4 lower
@@ -101,7 +78,7 @@ void LCD_Send_Command(I2C_HandleTypeDef *hi2c, uint8_t cmd)
  *
  * @param data - data to write to display
  */
-void LCD_Send_Data(I2C_HandleTypeDef *hi2c, uint8_t data)
+static void __LCD_Send_Data(I2C_HandleTypeDef *hi2c, uint8_t data)
 {
 	char upper_data, lower_data;
 	uint8_t data_t[4];
@@ -115,6 +92,32 @@ void LCD_Send_Data(I2C_HandleTypeDef *hi2c, uint8_t data)
 	data_t[3] = lower_data | 0x9;
 
 	HAL_I2C_Master_Transmit(hi2c, LCD_I2C_ADDRESS,(uint8_t *) data_t, 4, 100);
+}
+
+/**
+ * Initializes LCD
+ *
+ * @param hi2c - the I2C Peripheral
+ */
+void LCD_Init(I2C_HandleTypeDef *hi2c)
+{
+	/**
+	 * Initialization sequence for 4 bit, 2 line, 5x8 character size, Cursor display enabled,
+	 * Cursor Blinking disabled, Cursor incrementing, Display shifting disabled.
+	 */
+	HAL_Delay(41); // Wait >40ms after power on
+	LCD_Send_Command (hi2c, 0x28); // Function set - 4b mode (DL=0), 2 line display (N=1), 5x8 char size (F=0)
+	HAL_Delay(1); // Wait >39us
+	LCD_Send_Command (hi2c, 0x08); // Display ON/OFF control - Display off (D=0)
+	HAL_Delay(1); // Wait >39us
+	LCD_Send_Command (hi2c, 0x01);  // Clear display
+	HAL_Delay(2); // Wait >1.53ms
+	LCD_Send_Command (hi2c, 0x06); // Entry mode Set - Increment cursor (I/D'=1), No shifting of display (SH=0)
+	HAL_Delay(1);
+	LCD_Send_Command(hi2c, 0x02); // Return Home
+	HAL_Delay(2); // Wait >1.53ms
+	LCD_Send_Command (hi2c, 0x0C); // Display ON/OFF control - Display on (D=1), Cursor on (C=1), No Cursor Blinking (B=0)
+	HAL_Delay(1); // Wait >37us
 }
 
 /**
@@ -136,7 +139,7 @@ bool LCD_Send_String (I2C_HandleTypeDef *hi2c, char *str)
 		{
 			LCD_Cursor_Set(hi2c, 0, 0); // Set cursor to 2nd row
 		}
-		LCD_Send_Data (hi2c, *str++);
+		__LCD_Send_Data(hi2c, *str++);
 		HAL_Delay(1); // Wait >37us
 		col_count++;
 	}
@@ -148,7 +151,7 @@ bool LCD_Send_String (I2C_HandleTypeDef *hi2c, char *str)
  */
 void LCD_Clear(I2C_HandleTypeDef *hi2c)
 {
-	LCD_Send_Command(hi2c, 0x01);
+	__LCD_Send_Command(hi2c, 0x01);
 	HAL_Delay(2); // Wait >1.52ms
 }
 
