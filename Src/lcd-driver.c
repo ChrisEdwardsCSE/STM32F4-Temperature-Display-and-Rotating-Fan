@@ -1,19 +1,19 @@
 /*
  * lcd-driver.c
  *
+ * Driver for 16x2 Liquid Cyrstal Display with I2C GPIO Extender Module.
+ * Compatible with STM32F4 Boards.
+ *
  *  Created on: Jul 28, 2024
  *      Author: Christopher Edwards
  */
 
-
+// LCD Datasheet: https://www.sparkfun.com/datasheets/LCD/ADM1602K-NSW-FBS-3.3v.pdf
+// I2C expander Datasheet: https://www.nxp.com/docs/en/data-sheet/PCF8574_PCF8574A.pdf
 
 #include "lcd-driver.h"
 
-
-#define LCD_I2C_ADDRESS 0x27 << 1
-
-// LCD Datasheet: https://www.sparkfun.com/datasheets/LCD/ADM1602K-NSW-FBS-3.3v.pdf
-// I2C expander Datasheet: https://www.nxp.com/docs/en/data-sheet/PCF8574_PCF8574A.pdf
+#define LCD_I2C_ADDRESS 0x27 << 1 // Default address of I2C slave
 
 /**
  *
@@ -168,15 +168,7 @@ void LCD_Cursor_Set(I2C_HandleTypeDef *hi2c, uint8_t row, uint8_t col)
 	{
 		col |= 0x80;
 	}
-    switch (row)
-    {
-        case 0:
-            col |= 0x80;
-            break;
-        case 1:
-            col |= 0xc0;
-            break;
-    }
+
     LCD_Send_Command(hi2c, col);
     HAL_Delay(1); // Wait > 37us
 }
