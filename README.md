@@ -1,7 +1,10 @@
 # Temperature Display and Rotating Fan
-This project takes the temperature, displays the reading to an LCD, and turns on a rotating fan at different speeds according to the read temperature. This project was built on an STM32F446RE Nucleo Discovery Board using STM's HAL and drivers that I wrote for peripherals.
 
 **[Demo Video](https://youtu.be/MhBhJYdzf1E)**
+
+This project takes the temperature (ADC), displays the reading to an LCD (I2C + implemented driver), and turns on a rotating fan built with a servo (PWM) and BLDC Motor at different speeds according to the read temperature. This project was built on an STM32F4MCU board using STM's HAL and drivers that I wrote for peripherals.
+
+
 
 # Project Details
 ## Temperature
