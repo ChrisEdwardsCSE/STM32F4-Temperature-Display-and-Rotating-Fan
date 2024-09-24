@@ -1,4 +1,4 @@
-# Temperature Display and Rotating Fan
+# STM32F4 MCU Thermometer and Rotating Fan Controller
 
 **[Demo Video](https://youtu.be/MhBhJYdzf1E)**
 
