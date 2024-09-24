@@ -7,6 +7,7 @@ This project takes the temperature (ADC), displays the reading to an LCD (I2C + 
 
 
 # Project Details
+![Schematic](assets/STM32F4-Temperature-Fan-Schematic.png)
 ## Temperature
 The temperature is taken from a TMP102 analog output sensor. The analog value is interpretted by the microcontroller's ADC peripheral. The ADC polls for a reading every 5 seconds. This procedure is non-blocking, it uses a timer interrupt to control the periodicity of the reading.
 
